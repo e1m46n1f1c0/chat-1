@@ -47,7 +47,7 @@ $success = "Successfully registered!";
 $salt = 'DKA309dkasd9ASDK';
 
 //IGNORE AND DO NOT EDIT ANYTHING BELOW THIS
-mysql_connect($dbhost, $dbusername, $dbpassword);
-mysql_select_db($dbname);
+$conn = mysqli_connect($dbhost, $dbusername, $dbpassword);
+mysqli_select_db($conn, $dbname);
 
 ?>

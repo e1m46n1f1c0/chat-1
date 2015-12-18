@@ -11,8 +11,8 @@ include_once('./inc/settings.php');
 
 //user information gathering
 $uid = $_SESSION['id'];
-$sql = mysql_query("SELECT level, color, username FROM users WHERE id='$uid'");
-$fetch = mysql_fetch_array($sql);
+$sql = mysqli_query($conn, "SELECT level, color, username FROM users WHERE id='$uid'");
+$fetch = mysqli_fetch_array($sql);
 $level = $fetch['level'];
 $username = $fetch['username'];
 $color = $fetch['color'];
@@ -35,9 +35,9 @@ if(isset($_POST['text']) && isset($_POST['chatid']) && $_SESSION['message'] !== 
 	$chatid = clean($_POST['chatid']);
 	
 	//PULL INFORMATION ABOUT USER
-	$sql = mysql_query("SELECT `chatname`, `reqname`, `recname` FROM `chat` WHERE `chatname`='$chatid'");
-	if(mysql_num_rows($sql) > '0'){
-		$fetch = mysql_fetch_array($sql);
+	$sql = mysqli_query($conn, "SELECT `chatname`, `reqname`, `recname` FROM `chat` WHERE `chatname`='$chatid'");
+	if(mysqli_num_rows($sql) > '0'){
+		$fetch = mysqli_fetch_array($sql);
 		$reqname = $fetch['reqname'];
 		$recname = $fetch['recname'];
 		if($username == $reqname or $username == $recname){
@@ -61,7 +61,7 @@ if(isset($_POST['text']) && isset($_POST['chatid']) && $_SESSION['message'] !== 
 			if(substr($text, 0, 15) == '/changepassword'){
 				$newpassword = substr($text, 16, strlen($text));
 				$newpassword = hash('sha256', $newpassword);
-				$sql = mysql_query("UPDATE `users` SET `password`='$newpassword' WHERE id='$uid'");
+				$sql = mysqli_query($conn, "UPDATE `users` SET `password`='$newpassword' WHERE id='$uid'");
 				$fp = fopen($filename, 'a');
 				fwrite($fp, "<div class='msgln'><b>A user just made use of the 'changepassword' command and changed his password.<br></b></div>");
 				fclose($fp);
@@ -70,9 +70,9 @@ if(isset($_POST['text']) && isset($_POST['chatid']) && $_SESSION['message'] !== 
 			if(substr($text, 0, 4) == '/ban'){
 				if($level == '1'){
 				$victim = clean(substr($text, 5, strlen($text)));
-				$sql = mysql_query("SELECT * FROM users WHERE username='$victim'");
-				if(mysql_num_rows($sql) == '1'){
-					$sql = mysql_query("UPDATE `users` SET `level`='3' WHERE username='$victim'");
+				$sql = mysqli_query($conn, "SELECT * FROM users WHERE username='$victim'");
+				if(mysqli_num_rows($sql) == '1'){
+					$sql = mysqli_query($conn, "UPDATE `users` SET `level`='3' WHERE username='$victim'");
 					$fp = fopen($filename, 'a');
 					fwrite($fp, "<div class='msgln'><b>The user ".$victim." has just been banned.<br></b></div>");
 					fclose($fp);
@@ -86,7 +86,7 @@ if(isset($_POST['text']) && isset($_POST['chatid']) && $_SESSION['message'] !== 
 			//COLOR
 			if(substr($text, 0, 6) == '/color'){
 				$color = clean(substr($text, 7, strlen($text)));
-				$sql = mysql_query("UPDATE `users` SET `color`='$color' WHERE id='$uid'");
+				$sql = mysqli_query($conn, "UPDATE `users` SET `color`='$color' WHERE id='$uid'");
 				$fp = fopen($filename, 'a');
 				fwrite($fp, "<div class='msgln'><b>The user ".$username." has just updated his/her color!<br></b></div>");
 				fclose($fp);
@@ -100,7 +100,7 @@ if(isset($_POST['text']) && isset($_POST['chatid']) && $_SESSION['message'] !== 
 			}
 			//SUICIDE
 			if($text == '/suicide'){
-				$sql = mysql_query("UPDATE `users` SET `level`='3' WHERE id='$uid'");
+				$sql = mysqli_query($conn, "UPDATE `users` SET `level`='3' WHERE id='$uid'");
 				$fp = fopen($filename, 'a');
 				fwrite($fp, "<div class='msgln'><b>For some reason, ".$username." has committed suicide.<br></b></div>");
 				fclose($fp);
@@ -124,9 +124,9 @@ if(isset($_POST['text']) && isset($_POST['chatid']) && $_SESSION['message'] !== 
 			if(substr($text, 0, 6) == '/unban'){
 				if($level == '1'){
 				$victim = clean(substr($text, 7, strlen($text)));
-				$sql = mysql_query("SELECT * FROM users WHERE username='$victim'");
-				if(mysql_num_rows($sql) == '1'){
-					$sql = mysql_query("UPDATE `users` SET `level`='2' WHERE username='$victim'");
+				$sql = mysqli_query($conn, "SELECT * FROM users WHERE username='$victim'");
+				if(mysqli_num_rows($sql) == '1'){
+					$sql = mysqli_query($conn, "UPDATE `users` SET `level`='2' WHERE username='$victim'");
 					$fp = fopen($filename, 'a');
 					fwrite($fp, "<div class='msgln'><b>The user ".$victim." has just been unbanned.<br></b></div>");
 					fclose($fp);

@@ -60,11 +60,11 @@ function showLoginForm(){ ?>
 if(isset($_POST['username']) && isset($_POST['password'])){
 	$username = clean($_POST['username']); //saves users username to a sanatized variable
 	$password = hash('sha256', $_POST['password']); //saves users plaintext password to a sanatized variable
-	$sql = mysql_query("SELECT * FROM users WHERE username='$username' AND password='$password'");
+	$sql = mysqli_query($conn, "SELECT * FROM users WHERE username='$username' AND password='$password'");
 	$ip = $_SERVER['REMOTE_ADDR'];
-	if(mysql_num_rows($sql) == '1'){ //if the mysql table has only one entry, it will log the user in
-		$fetch = mysql_fetch_array($sql); //used to pull information using pointers
-			$sql = mysql_query("UPDATE `users` SET `ip`='$ip' WHERE username='$username' AND password='$password'");
+	if(mysqli_num_rows($sql) == '1'){ //if the mysql table has only one entry, it will log the user in
+		$fetch = mysqli_fetch_array($sql); //used to pull information using pointers
+			$sql = mysqli_query($conn, "UPDATE `users` SET `ip`='$ip' WHERE username='$username' AND password='$password'");
 			$id = $fetch['id']; //id of the user
 			$_SESSION['id'] = $id; //logs the user in essentially
 	} else {
@@ -77,10 +77,10 @@ if(isset($_POST['username']) && isset($_POST['password'])){
 if(isset($_POST['rusername']) && isset($_POST['rpassword'])){
 	$username = clean($_POST['rusername']);
 	$password = hash('sha256', $_POST['rpassword']);
-	$sql = mysql_query("SELECT * FROM users WHERE username='$username'");
+	$sql = mysqli_query($conn, "SELECT * FROM users WHERE username='$username'");
 	$ip = $_SERVER['REMOTE_ADDR'];
-	if(mysql_num_rows($sql) == 0 && strlen($username) > 2 && strlen($password) > 2){
-		$sql = mysql_query("INSERT INTO `users`(`username`, `password`, `level`, `ip`) VALUES ('$username', '$password', '2', '$ip')");
+	if(mysqli_num_rows($sql) == 0 && strlen($username) > 2 && strlen($password) > 2){
+		$sql = mysqli_query($conn, "INSERT INTO `users`(`username`, `password`, `level`, `ip`) VALUES ('$username', '$password', '2', '$ip')");
 		echo("<p class='invalid'>".$success."</p>");
 	} else {
 		echo("<p class='invalid'>".$takenerror."</p>");
@@ -96,13 +96,13 @@ if(isset($_GET['chat'])){
 	whois();
 	if($level == '1' or $level == '2'){
 		$chatid = clean($_GET['chat']);
-		$sql = mysql_query("SELECT username FROM users WHERE id='$chatid'");
-		if(mysql_num_rows($sql) == '1'){
-			$fetch = mysql_fetch_array($sql);
+		$sql = mysqli_query($conn, "SELECT username FROM users WHERE id='$chatid'");
+		if(mysqli_num_rows($sql) == '1'){
+			$fetch = mysqli_fetch_array($sql);
 			$otherusername = $fetch['username'];
 			$chatfile = md5($username.$otherusername);
-			$sql = mysql_query("SELECT id FROM chat WHERE chatname='$chatfile'");
-			if(mysql_num_rows($sql) == '1'){
+			$sql = mysqli_query($conn, "SELECT id FROM chat WHERE chatname='$chatfile'");
+			if(mysqli_num_rows($sql) == '1'){
 				$fp = fopen("log.html", 'a');
 				fwrite($fp, "<div class='msgln2'><b><a id='message' href='?private=".$chatfile."'>- CHAT REQUEST: ".$username.", ".$otherusername."</a><br></b></div>");
 				fclose($fp);
@@ -112,7 +112,7 @@ if(isset($_GET['chat'])){
 				$filename = $chatid.".html";
 				privateRedirect("./?private=".$chatfile);
 			} else {
-				$sql = mysql_query("INSERT INTO `chat`(`chatname`, `reqname`, `recname`) VALUES ('$chatfile', '$username', '$otherusername')");
+				$sql = mysqli_query($conn, "INSERT INTO `chat`(`chatname`, `reqname`, `recname`) VALUES ('$chatfile', '$username', '$otherusername')");
 				$fp = fopen("log.html", 'a');
 				fwrite($fp, "<div class='msgln2'><b><a id='message' href='?private=".$chatfile."'>- CHAT REQUEST: ".$username.", ".$otherusername."</a><br></b></div>");
 				fclose($fp);
@@ -141,9 +141,9 @@ if(isset($_GET['exit'])){
 //ACTION TAKEN IF A USER REQUESTS TO JOIN CHAT WITH ANOTHER USER
 if(isset($_GET['private'])){
 	$privateget = clean($_GET['private']);
-	$sql = mysql_query("SELECT `chatname`, `reqname`, `recname` FROM `chat` WHERE `chatname`='$privateget'");
-	if(mysql_num_rows($sql) > '0'){
-		$fetch = mysql_fetch_array($sql);
+	$sql = mysqli_query($conn, "SELECT `chatname`, `reqname`, `recname` FROM `chat` WHERE `chatname`='$privateget'");
+	if(mysqli_num_rows($sql) > '0'){
+		$fetch = mysqli_fetch_array($sql);
 		$reqname = $fetch['reqname'];
 		$recname = $fetch['recname'];
 		whois();
@@ -183,9 +183,9 @@ if(isset($_SESSION['id'])){
 <?php 
 if(isset($_GET['private'])){
 	$privatechatid = clean($_GET['private']);
-	$sql = mysql_query("SELECT * FROM chat WHERE chatname='$privatechatid'");
-	if(mysql_num_rows($sql) > '0'){
-		$fetch = mysql_fetch_array($sql);
+	$sql = mysqli_query($conn, "SELECT * FROM chat WHERE chatname='$privatechatid'");
+	if(mysqli_num_rows($sql) > '0'){
+		$fetch = mysqli_fetch_array($sql);
 		$friendsname = $fetch['reqname'];
 		$myname = $fetch['recname'];
 		echo("<p id='center'>Chat session between ".$myname." and ".$friendsname."</p>");
