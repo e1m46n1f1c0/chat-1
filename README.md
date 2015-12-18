@@ -1,6 +1,7 @@
 # Bizchat
 A PHP and MySQL based online chat. Includes simplistic private chat modules, commands, and administrative abilities.
-TO DO:
+
+#TO DO:
 * Add better configuration for user-only notifcations
 * Clean the sh*t out of the post.php file
 * Switch if-then style formatting into functions and maybe a class
