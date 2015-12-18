@@ -6,6 +6,12 @@ A PHP and MySQL based online chat. Includes simplistic private chat modules, com
 * Clean the sh*t out of the post.php file
 * Switch if-then style formatting into functions and maybe a class
 
+#License (someone told me to do this):
+* Anyone who uses some or all of this framework is not allowed to claim ownership of it, that is all.
+* You are freely able to manipulate or implement your own changes to the project.
+* If you attempt to monetize this project you must clearly give credit to the author
+* (This is my first time writing one of these, it's pretty bad, I know)
+
 # Version 1.0
 * Very personalized, version 1.1 will be more based around the user with setup files.
 * Commmand based, standard users have access to "/color" and "/dice"
