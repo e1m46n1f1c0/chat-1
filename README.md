@@ -5,6 +5,9 @@ A PHP and MySQL based online chat. Includes simplistic private chat modules, com
 * Add better configuration for user-only notifcations
 * Clean the sh*t out of the post.php file
 * Switch if-then style formatting into functions and maybe a class
+* Fix image sharing, XSS vulnerable as of now by abusing ?x=.jpg. Either removing entirely or updating.
+* Fix constant chat updates. Look into AJAX updating via comparison.
+* Make all log files only readable by system
 
 #License (someone told me to do this):
 * Anyone who uses some or all of this framework is not allowed to claim ownership of it, that is all.
