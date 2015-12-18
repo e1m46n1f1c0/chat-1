@@ -105,21 +105,7 @@ if(isset($_POST['text']) && isset($_POST['chatid']) && $_SESSION['message'] !== 
 				fwrite($fp, "<div class='msgln'><b>For some reason, ".$username." has committed suicide.<br></b></div>");
 				fclose($fp);
 			}
-			//IMG
-			if(substr($text, 0, 4) == '/img'){
-				$image = substr($text, 5, strlen($text));
-				$fp = fopen($filename, 'a');
-				fclose($fp);
-				if(substr($image, strlen($image) - 4, strlen($image)) == '.png' or substr($image, strlen($image) - 4, strlen($image)) == '.jpg' or substr($image, strlen($image) - 4, strlen($image)) == '.gif'){
-					$fp = fopen($filename, 'a');
-					fwrite($fp, "<div class='msgln'>(".date("g:i A").") <b><a href='".$uid."'><font color='".$color."'>".$username."</font></b></a>:<div></div><a href='".$image."'><img src='".$image."'></a><br></b></div>");
-					fclose($fp);
-				} else {
-					$fp = fopen($filename, 'a');
-					fwrite($fp, "<div class='msgln'><b>It appears ".$username." attempted to share a picture which doesn't exist!<br></b></div>");
-					fclose($fp);
-				}
-			}
+			
 			//UNBAN
 			if(substr($text, 0, 6) == '/unban'){
 				if($level == '1'){
