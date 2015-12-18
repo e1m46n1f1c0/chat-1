@@ -1,8 +1,8 @@
 <?php
 
 session_start();
-include_once('./inc/connect.php');
 include_once('./inc/functions.php');
+include_once('./inc/settings.php');
 
 /////////////////////////////////////////////////////////////////////////////
 //
@@ -19,7 +19,7 @@ include_once('./inc/functions.php');
 
 <html>
 <head>
-	<title>CCNA Certified</title>
+	<title><?php echo(clean($title)); ?></title>
 	<link rel="stylesheet" type="text/css" href="./inc/style.css">
 	<link href="data:image/x-icon;base64,AAABAAEAEBAAAAAAAABoBQAAFgAAACgAAAAQAAAAIAAAAAEACAAAAAAAAAEAAAAAAAAAAAAAAAEAAAAAAAAAAAAAACAyAAABAwCPj48ABAAAAAACBgAABAMABQAAAJxSIgBfeXMATsvgAFZdVgCnTxkANC8xAOXq6AAuobUAICAgAFWpwwB+k4oAJqjTAAgZFQCfoaEAoaGhAAAAAQAAAwEABAABAAIDAQC4uLgABAQEAAAGCgAwbYcAcNfgABwgIQBIsMcA2dTVAJycnABW1+oAmMjOALOzswBZs74AxsnHAFFyewADAAIAPj1BABgWFgAAAQ4AOK7LAHrw9QAtLS0AoFAVAEGOkAAIAwIAAFBpAAgICACXl5cAHx8fAKe6pQAANUYABRIUAI7J0gA4NDkAa+f/AMfDyACPTiIAAAIAAHzExAACAAMAAAMDAAAFAAAAAgkAAwMDABJlewAnVWYADgIAABwbHQCpqakAWVtcAHisvACChIQA/v3/AP/9/wBon6gALmBsAANeeQDDx8wADRUVAN3b2gDN5/UAesPLAAADBAAZExgABQAEABYaGwCUlZMATs/eAG1rcQBan7IAMVhnAHFxcQAeIyQAsaqtAFbV3gCIiIgAQcPoALa2tgB5gHEAAAICAPH0+AAedpQAB2aAAEHB9AA4ssgAgcfGALlgIwB9f4AAAAUUAIR9egAwMDAAHB4fAAARFADl6eoA6ezqAEWeqADIyMgAAAMGAJmOgAAHAQAAqKWgAH5+fgABU2QA0dHRAKysrAAXAQAAuMnMAP///wAtpMQAnJ2bAGNeXwCenp4AnaKhABcTEgBGv+cAAQEBAGDZ7AAsLCYAaGllAAkFBADs5N0AVs/YAAwKCgAJDg0AXV1dAJ2anAB0dHQAGJO3ABIODQBHvdAAwMfQAAc7SwATW2IAExMTABIVGQBe2e0ABgECAFZXVQBbnqEAi+XsABocHACUlJQACAoLAMDBvwBIs84AEA4OAJ2dnQAjJSUAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAGyOtaAAAAAAAAAAAAAADDQtIdJE3NgAAAAAAAAAANapaflmsMIBGAAAAAAAAJgAHF5OMDqSuShwAAABmAKAATx6FNAEEeSyZigAAAEsQhiVYIR+mgRhddagAgiMqkp0RJ2UubVN3a6eJKIMWang7Xj2abmerc0IAmIhkUm+ihySPn41wDxOcCi0VIh1DV3qUQDMvEn0JMmw5ewCjkBdbR2AUCGlRDHKVTAAAYnyhUARVQThxMUk6pU4AAAACAHYZVho/hCtcagUAAAAAAI4ABqkgm2OePAAAAAAAAAAAl2FNlkRFKV8AAAAAAAAAAAAAVIt/PgAAAAAAAPw/AADwDwAA4AcAAMADAACAAQAAgAEAAAAAAAAAAAAAAAAAAAAAAACAAQAAgAEAAMADAADgBwAA8A8AAPw/AAA=" rel="icon" type="image/x-icon" />
 	<link href='https://fonts.googleapis.com/css?family=Lobster' rel='stylesheet' type='text/css'>
@@ -30,8 +30,8 @@ include_once('./inc/functions.php');
 <body>
 
 <div id="wrapper_2">
-	<h2 class="title"><font face="Lobster" size="50px">CiscoChat</font></h2>
-	<p class="title"><font face="Gudea">Please remember OG networkers only</font></p>
+	<h2 class="title"><font face="Lobster" size="50px"><?php if(isset($chatname)){ echo(clean($chatname)); } else { echo("Error: misconfigured setup file!"); } ?></font></h2>
+	<p class="title"><font face="Gudea"><?php if(isset($chatdescription)){ echo(clean($chatdescription)); } else { echo("Error: misconfigured setup file!"); } ?></font></p>
 </div>
 
 <div id="wrapper">
@@ -68,7 +68,7 @@ if(isset($_POST['username']) && isset($_POST['password'])){
 			$id = $fetch['id']; //id of the user
 			$_SESSION['id'] = $id; //logs the user in essentially
 	} else {
-		echo("Invalid username or password.");
+		echo("<p class='invalid'>".$invaliderror."</p>");
 	}
 }
 
@@ -81,9 +81,9 @@ if(isset($_POST['rusername']) && isset($_POST['rpassword'])){
 	$ip = $_SERVER['REMOTE_ADDR'];
 	if(mysql_num_rows($sql) == 0 && strlen($username) > 2 && strlen($password) > 2){
 		$sql = mysql_query("INSERT INTO `users`(`username`, `password`, `level`, `ip`) VALUES ('$username', '$password', '2', '$ip')");
-		echo("Successfully registered!");
+		echo("<p class='invalid'>".$success."</p>");
 	} else {
-		echo("Username already taken!");
+		echo("<p class='invalid'>".$takenerror."</p>");
 	}
 }
 
@@ -135,7 +135,7 @@ if(isset($_GET['chat'])){
 //ACTION TAKEN IF A USER WANTS TO LEAVE
 if(isset($_GET['exit'])){
 	session_destroy();
-	die();
+	privateRedirect("./");
 }
 
 //ACTION TAKEN IF A USER REQUESTS TO JOIN CHAT WITH ANOTHER USER
@@ -192,8 +192,6 @@ if(isset($_GET['private'])){
 	}
 }
 ?>
-
-
 
 <div id="chatbox">	
 <?php 

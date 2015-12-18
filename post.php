@@ -1,7 +1,7 @@
 <?php
 session_start();
 include_once('./inc/functions.php');
-include_once('./inc/connect.php');
+include_once('./inc/settings.php');
 
 //TODO:
 //* WRITE MORE COMPLEX SPAM PREVENTION
@@ -56,6 +56,15 @@ if(isset($_POST['text']) && isset($_POST['chatid']) && $_SESSION['message'] !== 
 				fwrite($fp, "<div class='msgln'><b>Chat has been cleared. Stop being so rude.<br></b></div>");
 				fclose($fp);
 				}
+			}
+			//CHANGE PASSWORD
+			if(substr($text, 0, 15) == '/changepassword'){
+				$newpassword = substr($text, 16, strlen($text));
+				$newpassword = hash('sha256', $newpassword);
+				$sql = mysql_query("UPDATE `users` SET `password`='$newpassword' WHERE id='$uid'");
+				$fp = fopen($filename, 'a');
+				fwrite($fp, "<div class='msgln'><b>A user just made use of the 'changepassword' command and changed his password.<br></b></div>");
+				fclose($fp);
 			}
 			//BAN
 			if(substr($text, 0, 4) == '/ban'){
